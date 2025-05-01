@@ -1,0 +1,47 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}Déposer une réclamation{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <form method="post">
+        {% csrf_token %}
+        
+        <!-- Type de réclamation -->
+        <div class="mb-3">
+            <label for="{{ form.type_reclamation.id_for_label }}" class="form-label">Type de réclamation :</label>
+            {{ form.type_reclamation }}
+        </div>
+        
+        <!-- Titre de l'annonce -->
+        <div class="mb-3" id="titre_annonce_field" style="display: none;">
+            <label for="{{ form.titre_annonce.id_for_label }}" class="form-label">Titre de l'annonce :</label>
+            {{ form.titre_annonce }}
+        </div>
+        
+        <!-- Description -->
+        <div class="mb-3">
+            <label for="{{ form.description.id_for_label }}" class="form-label">Description :</label>
+            {{ form.description }}
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Envoyer</button>
+    </form>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const typeField = document.querySelector("#id_type_reclamation");
+            const titleField = document.querySelector("#id_titre_annonce").closest('.mb-3');
+            
+            typeField.addEventListener("change", function() {
+                if (typeField.value === "annonce") {
+                    titleField.style.display = "block";
+                } else {
+                    titleField.style.display = "none";
+                }
+            });
+        });
+        </script>
+        
+</div>
+{% endblock %}

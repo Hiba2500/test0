@@ -1,0 +1,15 @@
+{% extends 'base_generic.html' %}
+{% block content %}
+  <h2>Notifications</h2>
+  <ul>
+    {% for note in notifications %}
+      <li class="{% if not note.is_read %}unread{% endif %}">
+        <a href="{% url 'rental:notifications_details' note.pk %}">
+          {{ note.message|truncatechars:50 }} – {{ note.created }}
+        </a>
+      </li>
+    {% empty %}
+      <li>Aucune notification.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

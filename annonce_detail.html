@@ -1,0 +1,174 @@
+{% extends 'base_generic.html' %}
+{% load static %}
+
+{% block title %}{{ annonce.titre }}{% endblock %}
+
+{% block content %}
+{% with default_img="https://th.bing.com/th/id/OIP.ExZ6gz7Wuzao-o0tDvKwFgHaHa?rs=1&pid=ImgDetMain" %}
+<div class="container mt-4">
+  <div class="row">
+    <!-- Colonne de gauche: carousel et informations -->
+    <div class="col-md-8">
+      <div class="card mb-4">
+        {% if images %}
+          <div id="annonceCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+              {% for url in images %}
+                <div class="carousel-item{% if forloop.first %} active{% endif %}">
+                  <img
+                    src="{{ url|default:default_img }}"
+                    onerror="this.onerror=null;this.src='{{ default_img }}';"
+                    class="d-block w-100"
+                    style="object-fit:cover; height:100%;"
+                    alt="{{ annonce.titre }} (image {{ forloop.counter }})"
+                  >
+                </div>
+              {% endfor %}
+            </div>
+            {% if images|length > 1 %}
+              <button class="carousel-control-prev" type="button" data-bs-target="#annonceCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+                <span class="visually-hidden">Précédent</span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#annonceCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+                <span class="visually-hidden">Suivant</span>
+              </button>
+            {% endif %}
+          </div>
+        {% else %}
+          <img
+            src="{{ default_img }}"
+            class="d-block w-100 bg-light"
+            style="object-fit:cover; height:400px;"
+            alt="Image par défaut"
+          >
+        {% endif %}
+
+        <div class="card-body">
+          <h1 class="card-title">{{ annonce.titre }}</h1>
+          {% if user == annonce.proprietaire %}
+  <div class="mb-3">
+    <a href="{% url 'rental:edit_annonce' annonce.id %}" class="btn btn-sm btn-outline-primary me-2">
+      <i class="fas fa-edit"></i> Modifier
+    </a>
+    <a href="{% url 'rental:delete_annonce' annonce.id %}" class="btn btn-sm btn-outline-danger">
+      <i class="fas fa-trash"></i> Supprimer
+    </a>
+  </div>
+{% endif %}
+          <h3 class="text-primary">
+            {% if annonce.prix %} 
+              {{ annonce.prix }} DH 
+            {% else %}
+              Non renseigné
+            {% endif %}
+            
+          </h3>
+          
+          <p class="card-text">
+            <i class="fas fa-map-marker-alt"></i>
+            {{ annonce.adresse }}{% if annonce.adresse and annonce.ville %}, {% endif %}{{ annonce.ville }}
+          </p>
+          <hr>
+          <h4>Description</h4>
+          <p class="card-text">{{ annonce.description }}</p>
+          {% if annonce.url_annonce %}
+            <p>
+              <a href="{{ annonce.url_annonce }}" target="_blank" class="btn btn-outline-primary">
+                <i class="fas fa-external-link-alt"></i> Voir l'annonce externe
+              </a>
+            </p>
+          {% endif %}
+        </div>
+      </div>
+
+      {% if is_locataire %}
+        <div class="card mb-4">
+          <div class="card-body">
+            <h4>Intéressé(e) par ce bien ?</h4>
+            <a href="{% url 'rental:postuler_annonce' annonce.id %}" class="btn btn-success">
+              Postuler pour ce logement
+            </a>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Colonne de droite: détails -->
+    <div class="col-md-4">
+      <!-- Caractéristiques -->
+      <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0">Caractéristiques</h4>
+        </div>
+        <div class="card-body">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex justify-content-between">
+              <span>Type de bien</span>
+              <span class="fw-bold">{{ annonce.type_bien }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between">
+              <span>Surface</span>
+              <span class="fw-bold">{{ annonce.surface }} m²</span>
+            </li>
+            {% if annonce.chambres %}
+              <li class="list-group-item d-flex justify-content-between">
+                <span>Chambres</span>
+                <span class="fw-bold">{{ annonce.chambres }}</span>
+              </li>
+            {% endif %}
+            {% if annonce.salles_bain %}
+              <li class="list-group-item d-flex justify-content-between">
+                <span>Salles de bain</span>
+                <span class="fw-bold">{{ annonce.salles_bain }}</span>
+              </li>
+            {% endif %}
+            {% if annonce.etage is not None %}
+              <li class="list-group-item d-flex justify-content-between">
+                <span>Étage</span>
+                <span class="fw-bold">{{ annonce.etage }}</span>
+              </li>
+            {% endif %}
+            {% if annonce.secteur %}
+              <li class="list-group-item d-flex justify-content-between">
+                <span>Secteur</span>
+                <span class="fw-bold">{{ annonce.secteur }}</span>
+              </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+
+      <!-- Équipements -->
+      <div class="card mb-4">
+        <div class="card-header bg-info text-white">
+          <h4 class="mb-0">Équipements</h4>
+        </div>
+        <div class="card-body">
+          <ul class="list-unstyled mb-0">
+            {% for eq in equipment_list %}
+              <li class="mb-2">
+                <i class="fas fa-check-circle text-success"></i> {{ eq }}
+              </li>
+            {% empty %}
+              <li>Aucun équipement renseigné.</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+
+      <!-- Informations supplémentaires -->
+      <div class="card mb-4">
+        <div class="card-header bg-secondary text-white">
+          <h4 class="mb-0">Informations</h4>
+        </div>
+        <div class="card-body">
+          <p><strong>Date de publication :</strong> {{ annonce.date_creation|date:"d/m/Y" }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endwith %}
+{% endblock %}

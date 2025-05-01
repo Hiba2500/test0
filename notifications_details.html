@@ -1,0 +1,53 @@
+{% extends 'base_generic.html' %}
+{% load static %}
+
+{% block title %}Détail de la notification{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  {% if postulation %}
+    {% if is_owner %}
+      <h2>Candidature pour « {{ postulation.annonce.titre }} »</h2>
+      <dl class="row">
+        <dt class="col-sm-3">Nom</dt>
+        <dd class="col-sm-9">{{ postulation.nom }} {{ postulation.prenom }}</dd>
+        <dt class="col-sm-3">Email</dt>
+        <dd class="col-sm-9">{{ postulation.email }}</dd>
+        <dt class="col-sm-3">Téléphone</dt>
+        <dd class="col-sm-9">{{ postulation.telephone }}</dd>
+        <dt class="col-sm-3">Message</dt>
+        <dd class="col-sm-9">{{ postulation.message }}</dd>
+      </dl>
+
+      {% if postulation.status == "PENDING" %}
+        <form method="post">
+          {% csrf_token %}
+          <button name="action" value="accepted" class="btn btn-success me-2">Accepter</button>
+          <button name="action" value="refused"  class="btn btn-danger">Refuser</button>
+        </form>
+      {% else %}
+        <p class="mt-3">
+          <strong>Statut :</strong> {{ postulation.get_status_display }}
+        </p>
+      {% endif %}
+
+    {% else %}
+      {# locataire qui consulte sa propre notif #}
+      <h2>Votre candidature pour « {{ postulation.annonce.titre }} »</h2>
+      <p><strong>Statut :</strong> {{ postulation.get_status_display }}</p>
+      <a href="{% url 'rental:annonce_detail' postulation.annonce.id %}" class="btn btn-link">
+        Voir l'annonce
+      </a>
+    {% endif %}
+
+  {% else %}
+    {# notification sans postulation associée #}
+    <h2>Détails de la notification</h2>
+    <p>{{ notification.message }}</p>
+  {% endif %}
+
+  <a href="{% url 'rental:notifications' %}" class="btn btn-link mt-4">
+    ← Retour aux notifications
+  </a>
+</div>
+{% endblock %}

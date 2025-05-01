@@ -1,0 +1,130 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4">Créer une nouvelle annonce</h2>
+
+  <form method="post" enctype="multipart/form-data" class="row g-3 needs-validation">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <!-- Titre et description -->
+    <div class="col-md-6">
+      {{ form.titre.label_tag }}
+      {{ form.titre }}
+      {% for e in form.titre.errors %}
+        <div class="invalid-feedback d-block">{{ e }}</div>
+      {% endfor %}
+    </div>
+    <div class="col-md-6">
+      {{ form.description.label_tag }}
+      {{ form.description }}
+      {% for e in form.description.errors %}
+        <div class="invalid-feedback d-block">{{ e }}</div>
+      {% endfor %}
+    </div>
+
+    <!-- Prix, surface, étage -->
+    <div class="col-md-4">
+      {{ form.prix.label_tag }}
+      {{ form.prix }}
+      {% for e in form.prix.errors %}
+        <div class="invalid-feedback d-block">{{ e }}</div>
+      {% endfor %}
+    </div>
+    <div class="col-md-4">
+      {{ form.surface.label_tag }}
+      {{ form.surface }}
+      {% for e in form.surface.errors %}
+        <div class="invalid-feedback d-block">{{ e }}</div>
+      {% endfor %}
+    </div>
+    <div class="col-md-4">
+      {{ form.etage.label_tag }}
+      {{ form.etage }}
+      {% for e in form.etage.errors %}
+        <div class="invalid-feedback d-block">{{ e }}</div>
+      {% endfor %}
+    </div>
+
+    <!-- Adresse et ville -->
+    <div class="col-md-6">
+      {{ form.adresse.label_tag }}
+      {{ form.adresse }}
+      {% for e in form.adresse.errors %}
+        <div class="invalid-feedback d-block">{{ e }}</div>
+      {% endfor %}
+    </div>
+    <div class="col-md-6">
+      {{ form.ville.label_tag }}
+      {{ form.ville }}
+      {% for e in form.ville.errors %}
+        <div class="invalid-feedback d-block">{{ e }}</div>
+      {% endfor %}
+    </div>
+
+    <!-- Type de bien (saisie libre) -->
+    <div class="col-md-4">
+      {{ form.type_bien.label_tag }}
+      {{ form.type_bien }}
+      {% for e in form.type_bien.errors %}
+        <div class="invalid-feedback d-block">{{ e }}</div>
+      {% endfor %}
+    </div>
+
+    <!-- Chambres et salles de bain -->
+    <div class="col-md-4">
+      {{ form.chambres.label_tag }}
+      {{ form.chambres }}
+      {% for e in form.chambres.errors %}
+        <div class="invalid-feedback d-block">{{ e }}</div>
+      {% endfor %}
+    </div>
+    <div class="col-md-4">
+      {{ form.salles_bain.label_tag }}
+      {{ form.salles_bain }}
+      {% for e in form.salles_bain.errors %}
+        <div class="invalid-feedback d-block">{{ e }}</div>
+      {% endfor %}
+    </div>
+
+    <!-- Équipements (checkbox) -->
+    <div class="col-12">
+      <p class="mb-1"><strong>Équipements</strong></p>
+      <div class="row">
+        {% for bf in form %}
+          {% if bf.field.widget.input_type == "checkbox" %}
+            <div class="col-sm-6 col-lg-4 form-check mb-2">
+              {{ bf }}
+              {{ bf.label_tag }}
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Image de l'annonce -->
+    <div class="col-md-6">
+      {{ form.image_principale.label_tag }}
+      {{ form.image_principale }}
+      {% for e in form.image_principale.errors %}
+        <div class="invalid-feedback d-block">{{ e }}</div>
+      {% endfor %}
+    </div>
+
+    <!-- URL externe -->
+    <div class="col-md-6">
+      {{ form.url_annonce.label_tag }}
+      {{ form.url_annonce }}
+      {% for e in form.url_annonce.errors %}
+        <div class="invalid-feedback d-block">{{ e }}</div>
+      {% endfor %}
+    </div>
+
+    <!-- Bouton de soumission -->
+    <div class="col-12 text-end">
+      <button type="submit" class="btn btn-primary">Publier</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

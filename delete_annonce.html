@@ -1,0 +1,39 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="card border-danger">
+    <div class="card-header bg-danger text-white">
+      <h2 class="mb-0">Supprimer l'annonce</h2>
+    </div>
+    <div class="card-body">
+      <div class="alert alert-warning">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        <strong>Attention:</strong> Cette action est irréversible.
+      </div>
+
+      <h4>Êtes-vous sûr de vouloir supprimer cette annonce ?</h4>
+      
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title">{{ annonce.titre }}</h5>
+          {% if annonce.image_principale %}
+            <img src="{{ annonce.image_principale }}" alt="{{ annonce.titre }}" class="img-thumbnail mb-3" style="max-height: 200px;">
+          {% endif %}
+          <p><strong>Prix:</strong> {{ annonce.prix }} DH</p>
+          <p><strong>Adresse:</strong> {{ annonce.adresse }}, {{ annonce.ville }}</p>
+          <p><strong>Type de bien:</strong> {{ annonce.type_bien }}</p>
+        </div>
+      </div>
+
+      <form method="post">
+        {% csrf_token %}
+        <div class="d-flex justify-content-end">
+          <a href="{% url 'rental:annonce_detail' annonce.id %}" class="btn btn-secondary me-2">Annuler</a>
+          <button type="submit" class="btn btn-danger">Confirmer la suppression</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

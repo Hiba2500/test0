@@ -1,0 +1,51 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">Mes réclamations</h2>
+    
+    <a href="{% url 'rental:creer_reclamation' %}" class="btn btn-primary mb-4">
+        <i class="bi bi-plus-circle"></i> Nouvelle réclamation
+    </a>
+    
+    {% if reclamations %}
+        {% for reclamation in reclamations %}
+            <div class="card mb-3">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">{{ reclamation.titre }}</h5>
+                    <div>
+                       
+                        
+                        {% if reclamation.statut == 'en_attente' %}
+                            <span class="badge bg-secondary">En attente</span>
+                        {% elif reclamation.statut == 'en_cours' %}
+                            <span class="badge bg-primary">En traitement</span>
+                        {% elif reclamation.statut == 'resolue' %}
+                            <span class="badge bg-success">Résolue</span>
+                        {% else %}
+                            <span class="badge bg-danger">Rejetée</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ reclamation.description }}</p>
+                    <small class="text-muted">Créée le {{ reclamation.date_creation|date:"d/m/Y à H:i" }}</small>
+                    
+                    {% if reclamation.reponse %}
+                        <hr>
+                        <div class="alert alert-info mt-3">
+                            <h6>Réponse de l'administrateur :</h6>
+                            <p>{{ reclamation.reponse }}</p>
+                            <small class="text-muted">Répondu le {{ reclamation.date_reponse|date:"d/m/Y à H:i" }}</small>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-info">
+            Vous n'avez pas encore de réclamations.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

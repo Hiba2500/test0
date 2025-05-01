@@ -1,0 +1,97 @@
+{% extends 'base_generic.html' %}
+
+{% block title %}Réclamation #{{ reclamation.id }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header 
+                    {% if reclamation.status == 'RESOLVED' %}bg-success
+                    {% elif reclamation.status == 'REJECTED' %}bg-danger
+                    {% elif reclamation.status == 'IN_PROGRESS' %}bg-info
+                    {% else %}bg-warning{% endif %} text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">Réclamation #{{ reclamation.id }}</h4>
+                        <span class="badge bg-light text-dark">{{ reclamation.get_status_display }}</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h5>Sujet</h5>
+                        <p class="lead">{{ reclamation.sujet }}</p>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <h5>Type</h5>
+                            <p>{{ reclamation.get_type_reclamation_display }}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h5>Date de création</h5>
+                            <p>{{ reclamation.date_creation|date:"d/m/Y H:i" }}</p>
+                        </div>
+                      
+                    </div>
+                    
+                    {% if reclamation.annonce %}
+                    <div class="mb-3">
+                        <h5>Annonce concernée</h5>
+                        <p><a href="{% url 'rental:annonce_detail' reclamation.annonce.id %}">{{ reclamation.annonce.titre }}</a></p>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="mb-4">
+                        <h5>Description</h5>
+                        <div class="card">
+                            <div class="card-body bg-light">
+                                {{ reclamation.description|linebreaks }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if reclamation.status == 'RESOLVED' or reclamation.status == 'REJECTED' %}
+                    <div class="mb-4">
+                        <h5>Date de résolution</h5>
+                        <p>{{ reclamation.date_resolution|date:"d/m/Y H:i" }}</p>
+                    </div>
+                    {% endif %}
+                    
+                    {% if reclamation.reponse %}
+                    <div class="mb-4">
+                        <h5>Réponse</h5>
+                        <div class="card border-left-primary">
+                            <div class="card-header bg-light">
+                                <strong>De l'équipe support</strong> • {{ reclamation.date_resolution|date:"d/m/Y H:i" }}
+                            </div>
+                            <div class="card-body">
+                                {{ reclamation.reponse|linebreaks }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if reclamation.status == 'PENDING' or reclamation.status == 'IN_PROGRESS' %}
+                    <div class="alert alert-info mb-4">
+                        <i class="fas fa-info-circle"></i> Votre réclamation est en cours de traitement. Nous vous répondrons dans les plus brefs délais.
+                    </div>
+                    {% endif %}
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'rental:mes_reclamations' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Retour à mes réclamations
+                        </a>
+                        
+                        {% if reclamation.status == 'RESOLVED' %}
+                        <a href="{% url 'rental:creer_reclamation' %}" class="btn btn-primary">
+                            <i class="fas fa-plus-circle"></i> Nouvelle réclamation
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

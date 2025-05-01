@@ -1,0 +1,39 @@
+
+{% extends 'base_generic.html' %}
+
+{% block content %}
+  <h2>Gestion des réclamations</h2>
+
+  <table>
+    <tr>
+      <th>Titre de l'annonce</th>
+      <th>Type de réclamation</th>
+      <th>Description</th>
+      <th>Statut</th>
+      <th>Réponse de l'administrateur</th>
+      <th>Actions</th>
+    </tr>
+    {% for reclamation in reclamations %}
+      <tr>
+        <td>{{ reclamation.annonce.titre }}</td>
+        <td>{{ reclamation.get_type_reclamation_display }}</td>
+        <td>{{ reclamation.description }}</td>
+        <td>{{ reclamation.get_statut_display }}</td>
+        <td>{{ reclamation.reponse_admin }}</td>
+        <td>
+          <form method="post" action="{% url 'update_reclamation' reclamation.id %}">
+            {% csrf_token %}
+            <select name="statut">
+              <option value="PENDING" {% if reclamation.statut == 'PENDING' %}selected{% endif %}>En attente</option>
+              <option value="IN_PROGRESS" {% if reclamation.statut == 'IN_PROGRESS' %}selected{% endif %}>En cours</option>
+              <option value="RESOLVED" {% if reclamation.statut == 'RESOLVED' %}selected{% endif %}>Résolue</option>
+              <option value="REJECTED" {% if reclamation.statut == 'REJECTED' %}selected{% endif %}>Rejetée</option>
+            </select>
+            <textarea name="reponse" placeholder="Réponse de l'administrateur">{{ reclamation.reponse_admin }}</textarea>
+            <button type="submit">Mettre à jour</button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+  </table>
+{% endblock %}
